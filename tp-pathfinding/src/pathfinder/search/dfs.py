@@ -54,7 +54,7 @@ class DepthFirstSearch:
             # Generate all possible action and successor states
             successors = grid.get_neighbours(node.state)
 
-            # For each action and generated state
+            # For each succesor
             for action, state in successors.items():
 
                 # Check if the successor is not expanded
@@ -71,7 +71,7 @@ class DepthFirstSearch:
                     if new_node.state == grid.end:
                         return Solution(new_node,expanded)
                     
-                    # Add node to the frontier
+                    # Add new node to the frontier
                     frontier.add(new_node)
 
                     

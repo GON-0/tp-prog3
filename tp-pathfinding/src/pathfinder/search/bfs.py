@@ -69,6 +69,6 @@ class BreadthFirstSearch:
                     if state == grid.end:
                         return Solution(new_node,explored)
 
-                    # Add node to the frontier
+                    # Add new node to the frontier
                     frontier.add(new_node)
 
