@@ -16,12 +16,67 @@ class DepthFirstSearch:
             Solution: Solution found
         """
         # Initialize a node with the initial position
-        node = Node("", grid.start, 0)
+        node = Node("",
+                    grid.start,
+                    0,
+                    None,
+                    None)
 
-        # Initialize the explored dictionary to be empty
-        explored = {} 
+        # Add node to the expanded dictionary
+        expanded = {}         
         
-        # Add the node to the explored dictionary
-        explored[node.state] = True
+        # Return if the node contains a goal state
+        if node.state == grid.end:
+            return Solution(expanded)
         
-        return NoSolution(explored)
+
+        # Initialize the frontier with the initial node
+        # The frontier is a stack
+        frontier = StackFrontier()
+        frontier.add(node)
+
+        while True:
+
+            # Fail if the frontier is empty
+            if frontier.is_empty():
+                return NoSolution(expanded)
+            
+            # Remove a node from the frontier
+            node = frontier.remove()
+
+            # Discard node already expanded
+            if node.state in expanded:
+                continue
+
+            # Mark the node as expanded
+            expanded[node.state] = True
+
+            # Generate all possible action and successor states
+            successors = grid.get_neighbours(node.state)
+
+            # For each action and generated state
+            for action, state in successors.items():
+
+                # Check if the successor is not expanded
+                if state not in expanded:
+
+                    # Initialize the son node
+                    new_node = Node("",
+                                    state,
+                                    node.cost + grid.get_cost(state),
+                                    node,
+                                    action)
+                    
+                    # Return if the node contains a goal state
+                    if new_node.state == grid.end:
+                        return Solution(new_node,expanded)
+                    
+                    # Add node to the frontier
+                    frontier.add(new_node)
+
+                    
+
+
+
+
+            
