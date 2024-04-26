@@ -35,7 +35,7 @@ class GreedyBestFirstSearch:
         while True:
 
             #  Fail if the frontier is empty
-            if frontier.is_empty:
+            if frontier.is_empty():
                 return NoSolution(explored)
             
             # Remove a node from the frontier
