@@ -1,5 +1,2 @@
-from ..models.grid import Grid
-
-
-def heuristic(pos: tuple[int, int],) -> int:
-    return abs(pos[0] - Grid.end[0]) + abs(pos[1] - Grid.end[1]) 
+def heuristic(pos1: tuple[int, int], pos2: tuple[int, int]) -> int:
+    return abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])

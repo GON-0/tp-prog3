@@ -30,7 +30,7 @@ class AStarSearch:
         # Initialize the frontier with the initial node
         # The frontier is a priority queue
         frontier = PriorityQueueFrontier()
-        frontier.add(node, node.cost + heuristic(node.state))
+        frontier.add(node, node.cost + heuristic(node.state, grid.end))
 
         while True:
 
@@ -68,4 +68,4 @@ class AStarSearch:
                     explored[state] = new_cost
                     
                     # Add new node to the frontier
-                    frontier.add(new_node, new_cost + heuristic(state))
+                    frontier.add(new_node, new_cost + heuristic(node.state, grid.end))

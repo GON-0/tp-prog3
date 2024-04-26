@@ -30,7 +30,7 @@ class GreedyBestFirstSearch:
         # Initialize the frontier with the initial node
         # The frontier is a priority queue
         frontier = PriorityQueueFrontier()
-        frontier.add(node, heuristic(node.state))
+        frontier.add(node, heuristic(node.state, grid.end))
 
         while True:
 
@@ -68,4 +68,4 @@ class GreedyBestFirstSearch:
                     explored[state] = new_cost
                     
                     # Add new node to the frontier
-                    frontier.add(new_node,heuristic(state))
+                    frontier.add(new_node,heuristic(node.state, grid.end))
