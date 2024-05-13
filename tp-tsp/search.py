@@ -67,8 +67,7 @@ class HillClimbing(LocalSearch):
             diff = problem.val_diff(actual)
 
             # Buscar las acciones que generan el mayor incremento de valor obj
-            max_acts = [act for act, val in diff.items() if val ==
-                        max(diff.values())]
+            max_acts = [act for act, val in diff.items() if val == max(diff.values())]
 
             # Elegir una accion aleatoria
             act = choice(max_acts)
@@ -100,4 +99,69 @@ class HillClimbingReset(LocalSearch):
 class Tabu(LocalSearch):
     """Algoritmo de busqueda tabu."""
 
-    # COMPLETAR
+    def criterio_parada():
+        pass
+
+    def solve(self, problem: OptProblem):
+        """Resuelve un problema de optimizacion con busqueda tabu.
+
+        Argumentos:
+        ==========
+        problem: OptProblem
+            un problema de optimizacion
+        """
+        # Inicio del reloj
+        start = time()
+
+        # Arrancamos del estado inicial
+        actual = problem.init
+        value = problem.obj_val(problem.init)
+
+        tabu = []
+
+        while not self.criterio_parada():
+            # Determinar las acciones que se pueden aplicar
+            # y las diferencias en valor objetivo que resultan
+            diff = problem.val_diff(actual)
+
+            #Filtro las acciones no tabu
+            no_tabues = {act : val for act, val in diff.items() if act not in tabu}
+
+            # Buscar las acciones que generan el mayor incremento de valor obj
+            max_acts = [act for act, val in no_tabues.items() if val == max(no_tabues.values())]
+
+            # Elegir una accion aleatoria
+            act = choice(max_acts)
+
+            #Almacenamos el sucesor de aplicar la accion elegida
+            sucesor = problem.result(actual, act)
+
+            #Almacenamos el valor objetivo del sucesor
+            sucesor_value = problem.obj_val(sucesor)
+
+            #Si el valor objetivo del sucesor es mejor que el mejor valor objetivo actual,
+            #actualizamos el mejor objetivo actual con el mismo 
+            if sucesor_value > value:
+                value = sucesor_value
+
+            #Nos movemos al sucesor
+            actual = sucesor
+            value = value + diff[act]
+            self.niters += 1
+
+        #Retornamos la mejor solucion encontrada o #Retornamos si se cumple el criterio de parada
+        self.tour = actual
+        self.value = value
+        end = time()
+        self.time = end-start
+        return
+
+#Notas: lo que faltaria
+#Implementacion de lista tabu voy a usar el criterio 1 de teria
+    #1)Limitar la capacidad de la lista tabu
+
+#Preguntar si prefieren otro
+
+#Para el criterio de parada voy a combinar los criterios 2 y 3 de teoria
+    #2)Numero de iteraciones sin mejoras
+    #3)Valor de umbral
