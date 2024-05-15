@@ -99,8 +99,15 @@ class HillClimbingReset(LocalSearch):
 class Tabu(LocalSearch):
     """Algoritmo de busqueda tabu."""
 
-    def criterio_parada():
-        pass
+    def criterio_parada(cont_sm : int, value : float) -> bool:
+        """Criterio de parada para la busqueda tabu
+        Se combinan 2 criterios:
+        1)Numero de iteraciones sin mejora
+        2)Valor de umbral
+        """
+        max_cont_sm = 10 #Ir probando 
+        valor_umbral = -90000 #Este valor lo saque del enunciado, hill dio un valor de -87840 (ir probando)
+        return cont_sm == max_cont_sm and value >= valor_umbral
 
     def solve(self, problem: OptProblem):
         """Resuelve un problema de optimizacion con busqueda tabu.
@@ -117,9 +124,18 @@ class Tabu(LocalSearch):
         actual = problem.init
         value = problem.obj_val(problem.init)
 
-        tabu = []
+        #Almaceno el mejor, inicialmente el estado inicial y su valor objetivo
+        best = actual
+        best_value = value
 
-        while not self.criterio_parada():
+        #Inicializo la lista tabu
+        tabu = []
+        max_len = 10 #Ir probando y determinar experimentalmente el mejor valor
+
+        #Inicializo contador de iteraciones sin mejoras
+        cont_sm = 0
+
+        while not self.criterio_parada(cont_sm, sucesor_value):
             # Determinar las acciones que se pueden aplicar
             # y las diferencias en valor objetivo que resultan
             diff = problem.val_diff(actual)
@@ -139,10 +155,24 @@ class Tabu(LocalSearch):
             #Almacenamos el valor objetivo del sucesor
             sucesor_value = problem.obj_val(sucesor)
 
-            #Si el valor objetivo del sucesor es mejor que el mejor valor objetivo actual,
-            #actualizamos el mejor objetivo actual con el mismo 
-            if sucesor_value > value:
-                value = sucesor_value
+            #Si el valor objetivo del sucesor es mejor que el mejor valor 
+            #objetivo actual, actualizamos el mejor objetivo actual con
+            #el mismo y reinicio contador sin mejora
+            if sucesor_value > best_value:
+                best = sucesor
+                best_value = sucesor_value
+                cont_sm = 0  
+
+            #Incremento contador sin mejora
+            cont_sm+=1 
+
+            #Si la lista tabu llega a tener su capacidad maxima
+            #elimino el primer elemento de la misma (el mas viejo)
+            if len(tabu) == max_len:
+                tabu = tabu[1:]
+            
+            #Agrego la accion a la lista
+            tabu.append(act)
 
             #Nos movemos al sucesor
             actual = sucesor
@@ -150,18 +180,16 @@ class Tabu(LocalSearch):
             self.niters += 1
 
         #Retornamos la mejor solucion encontrada o #Retornamos si se cumple el criterio de parada
-        self.tour = actual
-        self.value = value
+        self.tour = best
+        self.value = best_value
         end = time()
         self.time = end-start
         return
 
-#Notas: lo que faltaria
-#Implementacion de lista tabu voy a usar el criterio 1 de teria
-    #1)Limitar la capacidad de la lista tabu
 
-#Preguntar si prefieren otro
 
-#Para el criterio de parada voy a combinar los criterios 2 y 3 de teoria
-    #2)Numero de iteraciones sin mejoras
-    #3)Valor de umbral
+#Preguntas tabu
+#Esta bien el codigo en general? bien traducido del algoritmo
+#Esta bien el criterio de parada?
+#Esta bien diseniada la lista tabu? la forma de actualizarla
+#esta bien agregar la misma accion que se aplico al estado a la lista tabu?
